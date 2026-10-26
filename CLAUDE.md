@@ -26,12 +26,12 @@ against Moment, which is installed as a devDependency for tests.
 - No semicolons, no trailing commas, single quotes, 2-space indent. Lint enforces these.
 - Plugins: `export default (o, c, d) => { const proto = c.prototype; proto.foo = function () {...} }`.
   `o` is the option object, `c` the Dayjs class, `d` the factory. Use `function`, not arrows,
-  so `this` binds. Methods must return new instances (wrap with `d(this)` or `this.clone()`),
-  never mutate.
+  so `this` binds. Methods that change the date return a new instance (`this.add(...)`,
+  `this.clone()`, `d(this)`) and never mutate `this`. Only `badMutable` is mutable on purpose.
 - Internal fields are terse: `$d` Date, `$y $M $D $W $H $m $s $ms`, `$L` locale, `$u` utc, `$x` extras.
 - Tests import from source: `import dayjs from '../../src'` and `'../../src/plugin/<name>'`.
-  They wrap `MockDate.set(new Date())`/`MockDate.reset()` in `beforeEach`/`afterEach`, use
-  flat `it()` blocks, and assert against `moment(...)` where Moment has the same API.
+  They wrap `MockDate.set(new Date())`/`MockDate.reset()` in `beforeEach`/`afterEach`, mostly
+  use flat `it()` blocks (larger suites group with `describe()`), and assert against `moment(...)`.
 - Locale files start with `// <English name> [<code>]` and `import dayjs from 'dayjs'`.
   Jest maps `'dayjs'` to `src/` through `test/__mocks__/dayjs.js`. `test/locale/keys.test.js`
   checks every locale's shape.
@@ -40,9 +40,9 @@ against Moment, which is installed as a devDependency for tests.
   choose the version. PRs target `dev`; `master` is the release branch.
 
 ## Guardrails
-- **Without `TZ=UTC`, tests fail on a non-UTC machine.** The final step of `npm test` uses
-  the host timezone, and in America/Los_Angeles `dayOfYear`, `localizedFormat` and
-  plugin `timezone` tests fail. CI runs on Ubuntu in UTC. Don't "fix" those assertions.
+- **Always prefix tests with `TZ=UTC`.** The final step of `npm test` uses the host timezone.
+  On a host set to America/Los_Angeles, 6 tests in `dayOfYear`, `localizedFormat` and plugin
+  `timezone` fail there. CI runs on Ubuntu in UTC. Don't "fix" those assertions.
 - Size budget: `dayjs.min.js` must stay under 2.99 KB gzipped. Put new behavior in a plugin, not in core.
 - Never edit build output: root `dayjs.min.js`, `index.d.ts`, `locale.json`, `locale/`,
   `plugin/`, `esm/`. These are gitignored and come from `src/` and `types/`. Root `plugin/`
