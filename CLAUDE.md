@@ -15,8 +15,8 @@ against Moment, which is installed as a devDependency for tests.
 
 ## Commands (npm, Node LTS; CI runs `npm install && npm run lint && npm test`)
 - One test file: `TZ=UTC npx jest test/plugin/dayOfYear.test.js --coverage=false`
-- Full suite: `TZ=UTC npm test`. It runs the timezone tests under several fixed TZs,
-  then all of jest with a **100% line-coverage** gate.
+- Full suite: `TZ=UTC npm test`. It runs the timezone tests under several TZs
+  (7 fixed, 1 host), then all of jest with a **100% line-coverage** gate.
 - Lint: `npm run lint` (ESLint 4, airbnb-base, over `src/* test/* build/*`). A
   `pre-commit` hook runs it.
 - Build: `NODE_OPTIONS=--openssl-legacy-provider npm run build` (UMD bundles, then
@@ -31,7 +31,7 @@ against Moment, which is installed as a devDependency for tests.
 - Internal fields are terse: `$d` Date, `$y $M $D $W $H $m $s $ms`, `$L` locale, `$u` utc, `$x` extras.
 - Tests import from source: `import dayjs from '../../src'` and `'../../src/plugin/<name>'`.
   They wrap `MockDate.set(new Date())`/`MockDate.reset()` in `beforeEach`/`afterEach`, mostly
-  use flat `it()` blocks (larger suites group with `describe()`), and assert against `moment(...)`.
+  use flat `it()` blocks (about 25 files group with `describe()`), and assert against `moment(...)`.
 - Locale files start with `// <English name> [<code>]` and `import dayjs from 'dayjs'`.
   Jest maps `'dayjs'` to `src/` through `test/__mocks__/dayjs.js`. `test/locale/keys.test.js`
   checks every locale's shape.
@@ -42,7 +42,7 @@ against Moment, which is installed as a devDependency for tests.
 ## Guardrails
 - **Always prefix tests with `TZ=UTC`.** The final step of `npm test` uses the host timezone.
   On a host set to America/Los_Angeles, 6 tests in `dayOfYear`, `localizedFormat` and plugin
-  `timezone` fail there. CI runs on Ubuntu in UTC. Don't "fix" those assertions.
+  `timezone` fail. CI runs on Ubuntu in UTC. Don't "fix" those assertions.
 - Size budget: `dayjs.min.js` must stay under 2.99 KB gzipped. Put new behavior in a plugin, not in core.
 - Never edit build output: root `dayjs.min.js`, `index.d.ts`, `locale.json`, `locale/`,
   `plugin/`, `esm/`. These are gitignored and come from `src/` and `types/`. Root `plugin/`
