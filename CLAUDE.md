@@ -29,9 +29,10 @@ against Moment, which is installed as a devDependency for tests.
   so `this` binds. Methods that change the date return a new instance (`this.add(...)`,
   `this.clone()`, `d(this)`) and never mutate `this`. Only `badMutable` is mutable on purpose.
 - Internal fields are terse: `$d` Date, `$y $M $D $W $H $m $s $ms`, `$L` locale, `$u` utc, `$x` extras.
-- Tests import from source: `import dayjs from '../../src'` and `'../../src/plugin/<name>'`.
-  They wrap `MockDate.set(new Date())`/`MockDate.reset()` in `beforeEach`/`afterEach`, mostly
-  use flat `it()` blocks (about 25 files group with `describe()`), and assert against `moment(...)`.
+- Tests import from source, not `'dayjs'`: core tests (`test/*.test.js`) use `'../src'`;
+  plugin and locale tests use `'../../src'` and `'../../src/plugin/<name>'`. Time-sensitive tests
+  wrap `MockDate.set(new Date())`/`MockDate.reset()` in `beforeEach`/`afterEach`. Tests mostly
+  use flat `it()` blocks (some group with `describe()`) and assert against `moment(...)`.
 - Locale files start with `// <English name> [<code>]` and `import dayjs from 'dayjs'`.
   Jest maps `'dayjs'` to `src/` through `test/__mocks__/dayjs.js`. `test/locale/keys.test.js`
   checks every locale's shape.
