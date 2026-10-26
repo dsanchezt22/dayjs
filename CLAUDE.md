@@ -1,6 +1,6 @@
 # Day.js
 
-A ~2 KB immutable date library that copies Moment.js's API. A small core
+A small immutable date library that copies Moment.js's API. A small core
 (`src/index.js`) is extended by opt-in plugins and locales. Behavior is checked
 against Moment, which is installed as a devDependency for tests.
 
@@ -43,7 +43,7 @@ against Moment, which is installed as a devDependency for tests.
 - **Always prefix tests with `TZ=UTC`.** The final step of `npm test` uses the host timezone.
   On a host set to America/Los_Angeles, 6 tests in `dayOfYear`, `localizedFormat` and plugin
   `timezone` fail. CI runs on Ubuntu in UTC. Don't "fix" those assertions.
-- Size budget: `dayjs.min.js` must stay under 2.99 KB gzipped. Put new behavior in a plugin, not in core.
+- Size budget: `npm run size` (size-limit) must report `dayjs.min.js` under 2.99 KB (2.78 KB now). Put new behavior in a plugin, not in core.
 - Never edit build output: root `dayjs.min.js`, `index.d.ts`, `locale.json`, `locale/`,
   `plugin/`, `esm/`. These are gitignored and come from `src/` and `types/`. Root `plugin/`
   is **not** `src/plugin/`.
